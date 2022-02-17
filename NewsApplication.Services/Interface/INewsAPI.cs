@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using NewsApplication.Services.ViewModel;
+using System.Threading.Tasks;
 
 namespace NewsApplication.Services.Interface
 {
     public interface INewsAPI
     {
-        Task<string> CallNewsApi(int page, string Url);
+        Task<string> CallThirdPartyNewsApi(int page, string Url);
     }
 }

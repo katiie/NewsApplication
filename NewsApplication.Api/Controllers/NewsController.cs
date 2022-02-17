@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NewsApplication.Services.Interface;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace NewsApplication.Api.Controllers
@@ -11,19 +12,26 @@ namespace NewsApplication.Api.Controllers
     public class NewsController : ControllerBase
     {
         private string NewsUrl { get; set; }
-        public NewsController(INewsAPI NewsAPI, IConfiguration configuration)
+        public INewsAPI _NewsAPI { get; }
+
+        static HttpClient client;
+        public NewsController(IConfiguration configuration, INewsAPI newsAPI )
         {
-            NewsUrl = $"{configuration.GetValue<string>("NewsApiUrl")}?apiKey={configuration.GetValue<string>("NewsApiKey")}";
-            _NewsAPI = NewsAPI;
+            ConstructUrl(configuration);
+            client = new HttpClient();
+            _NewsAPI = newsAPI;
         }
 
-        public INewsAPI _NewsAPI { get; }
+        private void ConstructUrl(IConfiguration configuration)
+        {
+            NewsUrl = $"{configuration.GetValue<string>("NewsApiUrl")}";
+        }
 
         [HttpGet]
 
         public async Task<IActionResult> Get(int Page)
         {
-            return Ok(await _NewsAPI.CallNewsApi(Page, NewsUrl));
+            return Ok(await _NewsAPI.CallThirdPartyNewsApi(Page, NewsUrl));
         }
 
 

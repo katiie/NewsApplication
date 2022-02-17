@@ -3,6 +3,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NewsApplication.APP.Services;
+using NewsApplication.Infrastructure.IRepository;
+using NewsApplication.Services;
+using NewsApplication.Services.Interface;
 
 namespace NewsApplication.App
 {
@@ -18,6 +22,7 @@ namespace NewsApplication.App
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IAPIServices, APIServices>();
             services.AddControllersWithViews();
         }
 

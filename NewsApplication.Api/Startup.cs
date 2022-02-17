@@ -50,6 +50,11 @@ namespace NewsApplication.Api
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "NewsApplication.Api v1"));
             }
 
+            app.UseCors(x => x
+            .AllowAnyOrigin()
+             .AllowAnyMethod()
+             .WithHeaders(Configuration.GetValue<string>("AllowedHeaders")));
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
