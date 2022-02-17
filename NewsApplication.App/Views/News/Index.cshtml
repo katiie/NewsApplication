@@ -24,7 +24,7 @@
 
         @foreach (var item in Model)
         {
-            <tr id="@counter">
+            <tr>
                 <td data-id="title">
                     @Html.DisplayFor(modelItem => item.title)
                 </td>
@@ -32,10 +32,9 @@
                     @Html.DisplayFor(modelItem => item.description)
                 </td>
                 <td>
-                    <button data-counter="@counter" data-url="@ViewBag.FavUrl" class="makeFave">Make A Favourite</button>
+                    <button data-id="btn" data-counter="@counter" data-url="@ViewBag.FavUrl" class="makeFave">Make A Favourite</button>
                 </td>
             </tr>
-            { counter = counter + 1; }
         }
     }
 
@@ -45,44 +44,32 @@
     <script>
         $('.makeFave').on('click', function (e) {
             e.preventDefault()
-            var formData = new FormData();
+            var formData = {};
             $(this).closest('tr').find('td').each(function () {
                 var textval = $(this).text();
                 var key = $(this).attr("data-id");
-                formData.append(key, textval)
+                if (key) {
+                    formData[`${key}`] = textval;
+                }
             });
             var url = $('#AddFavouritesUrl').val();
-            if (formData) {
+            var settings = {
+                "url": url,
+                "method": "POST",
+                "timeout": 0,
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "data": JSON.stringify(formData),
+            };
 
-                $.ajax
-                    ({
-                        type: "POST",
-                        data: formData,
-                        url:url,
-                        //contentType: false,
-                        //processData: false,
-                        success: function (result) {
-                            if (result.Success) {
-                               alert("Action was successful")
-                            } else {
-                                alert("An error occured, try again later")
-                                console.log("An error occured");
-                            }
+            $.ajax(settings).done(function (response) {
+                alert("Action was successful")
 
-                        },
-                        error: function (xhr, status, p3, p4) {
-                            var err = "Error " + " " + status + " " + p3 + " " + p4;
-                            if (xhr.responseText && xhr.responseText[0] === "{")
-                                err = JSON.parse(xhr.responseText).Message;
-                            console.log(err);
-                           
-                        }
-                    });
-
-            }
-            else {
-
-            }
+            }).catch(() => {
+                alert("An error occured, try again later")
+            });
+           
         });
 
     </script>
